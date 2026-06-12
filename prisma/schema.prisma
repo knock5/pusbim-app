@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  TUTOR
+  STUDENT
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id           String @id @default(uuid())
+  fullName     String
+  email        String @unique
+  passwordHash String
+
+  role     Role    @default(STUDENT)
+  isActive Boolean @default(true)
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  questions    Question[]
+  studentExams StudentExam[]
+}
+
+model Subject {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  chapters  Chapter[]
+  questions Question[]
+}
+
+model Chapter {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id])
+
+  questions Question[]
+}
+
+model Question {
+  id          String  @id @default(uuid())
+  subjectId   String
+  chapterId   String?
+  createdById String
+
+  questionText String  @db.Text
+  explanation  String? @db.Text
+
+  difficulty Difficulty @default(EASY)
+
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  chapter   Chapter? @relation(fields: [chapterId], references: [id])
+  createdBy User     @relation(fields: [createdById], references: [id])
+
+  options       QuestionOption[]
+  examQuestions ExamPackageQuestion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model QuestionOption {
+  id         String @id @default(uuid())
+  questionId String
+  label      String
+  text       String @db.Text
+
+  isCorrect Boolean @default(false)
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model ExamPackage {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  questions    ExamPackageQuestion[]
+  studentExams StudentExam[]
+}
+
+model ExamPackageQuestion {
+  id            String @id @default(uuid())
+  examPackageId String
+  questionId    String
+  questionOrder Int
+
+  examPackage ExamPackage @relation(fields: [examPackageId], references: [id], onDelete: Cascade)
+  question    Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model StudentExam {
+  id            String    @id @default(uuid())
+  studentId     String
+  examPackageId String
+  score         Float?
+  totalCorrect  Int       @default(0)
+  totalWrong    Int       @default(0)
+  startedAt     DateTime?
+  submittedAt   DateTime?
+
+  student     User        @relation(fields: [studentId], references: [id])
+  examPackage ExamPackage @relation(fields: [examPackageId], references: [id])
+
+  answers StudentAnswer[]
+}
+
+model StudentAnswer {
+  id               String   @id @default(uuid())
+  studentExamId    String
+  questionId       String
+  selectedOptionId String?
+  isCorrect        Boolean?
+
+  studentExam StudentExam @relation(fields: [studentExamId], references: [id], onDelete: Cascade)
+}
