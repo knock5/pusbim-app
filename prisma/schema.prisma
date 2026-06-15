@@ -4,8 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -77,8 +76,9 @@ model Question {
   options       QuestionOption[]
   examQuestions ExamPackageQuestion[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  studentAnswers StudentAnswer[]
 }
 
 model QuestionOption {
@@ -89,7 +89,8 @@ model QuestionOption {
 
   isCorrect Boolean @default(false)
 
-  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question       Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  studentAnswers StudentAnswer[]
 }
 
 model ExamPackage {
@@ -134,5 +135,7 @@ model StudentAnswer {
   selectedOptionId String?
   isCorrect        Boolean?
 
-  studentExam StudentExam @relation(fields: [studentExamId], references: [id], onDelete: Cascade)
+  studentExam    StudentExam     @relation(fields: [studentExamId], references: [id], onDelete: Cascade)
+  question       Question        @relation(fields: [questionId], references: [id])
+  selectedOption QuestionOption? @relation(fields: [selectedOptionId], references: [id])
 }
