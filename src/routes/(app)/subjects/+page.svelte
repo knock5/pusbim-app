@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+
 	let { data, form } = $props();
 </script>
 
@@ -36,7 +38,10 @@
 			</div>
 
 			<div class="flex gap-2">
-				<a href={`/subjects/${subject.id}/edit`} class="bg-yellow-500 text-white px-3 py-2 rounded">
+				<a
+					href={resolve(`/subjects/${subject.id}/edit`)}
+					class="bg-yellow-500 text-white px-3 py-2 rounded"
+				>
 					Edit
 				</a>
 

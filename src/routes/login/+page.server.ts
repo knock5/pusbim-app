@@ -27,7 +27,7 @@ export const actions: Actions = {
 			httpOnly: true,
 			sameSite: 'strict',
 			secure: false, // set to true in production
-			maxAge: 60 * 60 * 24 * 7 // 7 days
+			maxAge: 2 * 60 * 60 // 2 hours
 		});
 
 		throw redirect(302, '/dashboard');

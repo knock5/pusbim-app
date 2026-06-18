@@ -64,5 +64,23 @@ export const actions: Actions = {
 		});
 
 		return { success: true };
+	},
+
+	delete: async ({ request }) => {
+		const formData = await request.formData();
+		const id = String(formData.get('id') ?? '').trim();
+		const questionCount = await prisma.question.count({
+			where: { chapterId: id }
+		});
+
+		if (questionCount > 0) {
+			return fail(400, { error: 'Cannot delete chapter with questions' });
+		}
+
+		await prisma.chapter.delete({
+			where: { id }
+		});
+
+		return { success: true };
 	}
 };

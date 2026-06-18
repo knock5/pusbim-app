@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
 
-	let { data, form } = $props<{ data: PageData; form?: any }>();
+	let { data, form } = $props<{ data: PageData; form?: unknown }>();
 </script>
 
 <h1 class="text-2xl font-bold mb-6">Data Bab</h1>
@@ -56,6 +57,18 @@
 
 				<td class="border p-2">
 					{chapter.name}
+				</td>
+				<td class="border p-2 flex gap-2">
+					<a
+						href={resolve(`/chapters/${chapter.id}/edit`)}
+						class="bg-yellow-500 text-white px-2 py-1 rounded"
+					>
+						Edit
+					</a>
+					<form method="POST" action="?/delete">
+						<input type="hidden" name="id" value={chapter.id} />
+						<button type="submit" class="bg-red-500 text-white px-2 py-1 rounded"> Hapus </button>
+					</form>
 				</td>
 			</tr>
 		{/each}
