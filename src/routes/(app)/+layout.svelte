@@ -6,7 +6,7 @@
 
 <div class="flex min-h-screen">
 	<aside class="w-64 border-r p-4">
-		<h2 class="text-xl font-bold mb-4">Pusat Bimbel</h2>
+		<h2 class="text-xl font-bold mb-4">PusBim</h2>
 		<nav class="space-y-2">
 			<a href={resolve('/dashboard')} class="block px-3 py-2 rounded hover:bg-gray-200">Dashboard</a
 			>
