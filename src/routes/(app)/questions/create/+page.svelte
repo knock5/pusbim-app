@@ -33,7 +33,6 @@
 		bind:value={selectedChapterId}
 		name="chapterId"
 		class="border p-2 w-full"
-		required
 		disabled={!selectedSubjectId}
 	>
 		<option value="" disabled>-- Pilih Bab --</option>
